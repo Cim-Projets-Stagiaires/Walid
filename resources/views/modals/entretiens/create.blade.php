@@ -16,10 +16,8 @@
                         </ul>
                     </div>
                 @endif
-
                 <form action="{{ route('entretiens.store') }}" method="POST">
                     @csrf
-
                     <div class="mb-3">
                         <label for="id_stagiaire">Stagiaire</label>
                         <select name="id_stagiaire" id="id_stagiaire" class="form-control" required>

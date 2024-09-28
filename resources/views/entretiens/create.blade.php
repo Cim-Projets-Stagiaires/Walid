@@ -16,10 +16,8 @@
                     </ul>
                 </div>
             @endif
-
             <form action="{{ route('entretiens.store') }}" method="POST">
                 @csrf
-
                 <div class="form-row d-flex justify-content-between mb-3">
                     <div class="form-group col-md-4">
                         <label for="id_stagiaire">Stagiaire</label>

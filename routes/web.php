@@ -173,8 +173,9 @@ Route::get('/test-entretien-refuse/{stagiaire}', function ($stagiaireId) {
     return "Entretien refusé notification sent to " . $stagiaire->nom . " " . $stagiaire->prenom;
 });
 
+// Presentation Routes
+Route::get('/presentations/list/{id}',[PresentationController::class, 'list'])->name('presentations.list')->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
 Route::resource('presentations', PresentationController::class)->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
-
 // Additional routes for approving/refusing presentations
 Route::patch('/presentations/{id}/approuver', [PresentationController::class, 'approuver'])->name('presentations.approuver')->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
 Route::patch('/presentations/{id}/refuser', [PresentationController::class, 'refuser'])->name('presentations.refuser')->middleware('[auth, usertype, logoutOnBack, noCache]');

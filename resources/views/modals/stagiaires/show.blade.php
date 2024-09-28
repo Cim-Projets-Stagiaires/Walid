@@ -45,6 +45,9 @@
                                 @endif
                             </p>
                         </div>
+                        <div class="col-md-6 mb-3" style="padding-left: 15%;">
+                            <p><strong>Pole: </strong>{{ $stagiaire->demande->pole }}</p>
+                        </div>
                     </div>
                 </div>
                 <!-- Progress Bar Section -->
@@ -68,7 +71,10 @@
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-between w-100">
-                <a href="{{ route('rapports.list', $stagiaire->id) }}" class="btn btn-primary">Rapports du stagiaires</a>
+                <div>
+                    <a href="{{ route('rapports.list', $stagiaire->id) }}" class="btn btn-primary me-2">Les Rapports</a>
+                    <a href="{{ route('presentations.list', $stagiaire->id) }}" class="btn btn-secondary">Les Presentations</a>
+                </div>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>

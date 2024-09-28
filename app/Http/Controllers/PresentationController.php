@@ -33,6 +33,11 @@ class PresentationController extends Controller
         return view('presentations.index', compact('presentations'));
     }
 
+    public function list($id){
+        $presentations = Presentation::where('id_stagiaire', $id)->paginate(5);
+        return view('presentations.index', compact('presentations'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Registration</title>
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon-cim.png') }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>

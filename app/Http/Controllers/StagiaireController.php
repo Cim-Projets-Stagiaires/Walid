@@ -20,25 +20,43 @@ class StagiaireController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $stagiaires = User::where('type', 'stagiaire')->where('deleted', false)
+        // Get the filter from the request
+        $selectedPole = $request->input('pole');
+
+        // Query stagiaires with conditions
+        $stagiairesQuery = User::where('type', 'stagiaire')
+            ->where('deleted', false)
             ->whereHas('demande', function ($query) {
                 $query->where('status', 'approuvé');
             })->whereHas('entretien', function ($query) {
                 $query->where('status', 'approuvé');
-            })
-            ->paginate(6);
+            });
 
+        // Apply pole filter if selected
+        if ($selectedPole) {
+            $stagiairesQuery->whereHas('demande', function ($query) use ($selectedPole) {
+                $query->where('pole', $selectedPole);
+            });
+        }
+
+        // Paginate the result
+        $stagiaires = $stagiairesQuery->latest()->paginate(6);
+
+        // Get unique poles for the filter dropdown
+        $poles = Demande_de_stage::select('pole')->distinct()->pluck('pole');
+
+        // Perform additional logic for progress calculation
         foreach ($stagiaires as $stagiaire) {
             $encadrant = User::find($stagiaire->id_encadrant);
             $demande = $stagiaire->demande;
+
             if ($demande) {
-                // Calculate the duration in months between 'date_de_debut' and 'date_de_fin'
                 $dateDebut = Carbon::parse($demande->date_de_debut);
                 $dateFin = Carbon::parse($demande->date_de_fin);
                 $stageDurationMonths = $dateDebut->diffInMonths($dateFin) + 1;
-                // Determine the required number of semi and final rapports and presentations
+
                 if ($stageDurationMonths <= 2) {
                     $requiredSemiRapports = 1;
                     $requiredFinalRapports = 1;
@@ -56,13 +74,16 @@ class StagiaireController extends Controller
                     $requiredFinalRapports = 1;
                     $requiredPresentations = 1;
                 }
+
                 // Fetch the number of validated semi and final rapports and presentations
                 $validatedSemiRapports = Rapport::where('id_stagiaire', $stagiaire->id)->where('type', 'semi')->where('status', 'validé')->count();
                 $validatedFinalRapports = Rapport::where('id_stagiaire', $stagiaire->id)->where('type', 'final')->where('status', 'validé')->count();
                 $validatedPresentations = Presentation::where('id_stagiaire', $stagiaire->id)->where('status', 'validé')->count();
+
                 // Total items to track progress
                 $totalItems = $requiredSemiRapports + $requiredFinalRapports + $requiredPresentations;
                 $completedItems = $validatedSemiRapports + $validatedFinalRapports + $validatedPresentations;
+
                 // Calculate the progress percentage
                 $stagiaire->progress = ($totalItems > 0) ? ($completedItems / $totalItems) * 100 : 0;
                 $stagiaire->requiredSemiRapports = $requiredSemiRapports;
@@ -73,7 +94,6 @@ class StagiaireController extends Controller
                 $stagiaire->validatedPresentations = $validatedPresentations;
                 $stagiaire->encadrant = $encadrant;
             } else {
-                // If there's no demande, default progress to 0
                 $stagiaire->progress = 0;
                 $stagiaire->requiredSemiRapports = 0;
                 $stagiaire->requiredFinalRapports = 0;
@@ -83,18 +103,38 @@ class StagiaireController extends Controller
                 $stagiaire->validatedPresentations = 0;
             }
         }
-        return view('stagiaires.index', compact("stagiaires"));
+
+        return view('stagiaires.index', compact("stagiaires", "poles", "selectedPole"));
     }
 
-    public function archive()
+
+    public function archive(Request $request)
     {
-        $stagiaires = User::where('type', 'stagiaire')->where('deleted', true)
+
+        // Get the filter from the request
+        $selectedPole = $request->input('pole');
+
+        // Query stagiaires with conditions
+        $stagiairesQuery = User::where('type', 'stagiaire')
+            ->where('deleted', true)
             ->whereHas('demande', function ($query) {
                 $query->where('status', 'approuvé');
             })->whereHas('entretien', function ($query) {
                 $query->where('status', 'approuvé');
-            })
-            ->paginate(6);
+            });
+
+        // Apply pole filter if selected
+        if ($selectedPole) {
+            $stagiairesQuery->whereHas('demande', function ($query) use ($selectedPole) {
+                $query->where('pole', $selectedPole);
+            });
+        }
+
+        // Paginate the result
+        $stagiaires = $stagiairesQuery->latest()->paginate(6);
+
+        // Get unique poles for the filter dropdown
+        $poles = Demande_de_stage::select('pole')->distinct()->pluck('pole');
 
         foreach ($stagiaires as $stagiaire) {
             $encadrant = User::find($stagiaire->id_encadrant);
@@ -149,7 +189,7 @@ class StagiaireController extends Controller
                 $stagiaire->validatedPresentations = 0;
             }
         }
-        return view('stagiaires.index', compact("stagiaires"));
+        return view('stagiaires.index', compact("stagiaires", "poles", "selectedPole"));
     }
 
     public function listCandidats(Request $request)
@@ -159,6 +199,7 @@ class StagiaireController extends Controller
             ->whereHas('demande', function ($query) {
                 $query->whereIn('status', ['postulé', 'refusé']);
             })
+            ->latest()
             ->get();
 
         // Second set: Stagiaires who have entretien 'en attente' or 'refusé', or who do not have any entretien

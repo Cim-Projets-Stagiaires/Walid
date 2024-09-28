@@ -157,9 +157,47 @@ class AdminController extends Controller
             ->orderBy('month_number')
             ->get();
 
-        $stagiairesParEtablissement = Demande_de_stage::select('etablissement', DB::raw('COUNT(DISTINCT id_stagiaire) as total'))
+        /* $stagiairesParEtablissement = Demande_de_stage::select('etablissement', DB::raw('COUNT(DISTINCT id_stagiaire) as total'))
+            ->groupBy('etablissement')
+            ->get(); */
+        /* dd($stagiairesParEtablissement); */
+
+        $stagiairesParEtablissement = Demande_de_stage::select('etablissement', DB::raw('COUNT(DISTINCT demande_de_stages.id_stagiaire) as total'))
+            ->where('demande_de_stages.status', 'approuvé')  // Only approved demandes
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('entretiens')
+                    ->whereColumn('entretiens.id_stagiaire', 'demande_de_stages.id_stagiaire')  // Match stagiaire
+                    ->where('entretiens.status', 'approuvé');  // Only approved entretiens
+            })
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('users')
+                    ->whereColumn('users.id', 'demande_de_stages.id_stagiaire')  // Match stagiaire
+                    ->where('users.deleted', false);  // Only non-deleted users
+            })
             ->groupBy('etablissement')
             ->get();
+        /* dd($stagiairesParEtablissement);  */
+
+        $stagiairesPerPole = Demande_de_stage::select('pole', DB::raw('COUNT(DISTINCT demande_de_stages.id_stagiaire) as total'))
+            ->where('demande_de_stages.status', 'approuvé')
+            ->whereIn('pole', ['Valorisation', 'Incubation', 'Services Transverses'])  // Only approved demandes
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('entretiens')
+                    ->whereColumn('entretiens.id_stagiaire', 'demande_de_stages.id_stagiaire')  // Match stagiaire
+                    ->where('entretiens.status', 'approuvé');  // Only approved entretiens
+            })
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('users')
+                    ->whereColumn('users.id', 'demande_de_stages.id_stagiaire')  // Match stagiaire
+                    ->where('users.deleted', false);  // Only non-deleted users
+            })
+            ->groupBy('pole')
+            ->get();
+            /* dd($stagiairesParPole); */
 
         // New statistics for entretiens
         $totalEntretiens = Entretien::count();
@@ -175,10 +213,11 @@ class AdminController extends Controller
             'etablissements' => $etablissements,
             'demandesParMois' => $demandesParMois,
             'stagiairesParEtablissement' => $stagiairesParEtablissement,
-            'totalEntretiens' => $totalEntretiens, 
-            'approvedEntretiens' => $approvedEntretiens, 
-            'refusedEntretiens' => $refusedEntretiens, 
+            'totalEntretiens' => $totalEntretiens,
+            'approvedEntretiens' => $approvedEntretiens,
+            'refusedEntretiens' => $refusedEntretiens,
             'pendingEntretiens' => $pendingEntretiens,
+            'stagiairesPerPole' => $stagiairesPerPole
         ]);
     }
 }

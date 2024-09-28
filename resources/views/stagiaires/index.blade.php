@@ -13,7 +13,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-
+        <!-- Pole Filter Form -->
+            <form method="GET" action="{{ route('stagiaires.index') }}" class="mb-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <select name="pole" class="form-select" onchange="this.form.submit()">
+                            <option value="">-- Tout les Poles --</option>
+                            @foreach ($poles as $pole)
+                                <option value="{{ $pole }}" {{ $selectedPole == $pole ? 'selected' : '' }}>
+                                    {{ $pole }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </form>
         @if ($stagiaires->isEmpty())
             <div class="alert alert-info">Aucun stagiaire trouvé.</div>
         @else

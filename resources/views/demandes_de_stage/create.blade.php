@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
     <meta charset="UTF-8" />
     <title>Demande de stage</title>
@@ -9,6 +8,7 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon-cim.png') }}" />
 </head>
 <style>
 </style>

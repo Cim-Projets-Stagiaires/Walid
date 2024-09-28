@@ -65,7 +65,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-4">
             <div class="col-md-6">
                 <div class="card" style="border: 2px solid #007BFF; height: 450px;">
@@ -132,9 +131,18 @@
                 </div>
             </div>
         </div>
+        <!-- Add the Stagiaires per Pole Bar Chart -->
+        <div class="col-md-6">
+            <div class="card" style="border: 2px solid #007BFF; height: 450px;">
+                <div class="card-header" style="font-weight: bold;">Stagiaires par Pole</div>
+                <div class="card-body d-flex justify-content-center align-items-center">
+                    <canvas id="stagiairesPerPoleChart" style="max-width: 100%; max-height: 90%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 @endsection
-
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -267,6 +275,31 @@
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                }
+            }
+        });
+        // Chart for Stagiaires per Pole
+        var stagiairesPerPoleData = {
+            labels: @json($stagiairesPerPole->pluck('pole')),
+            datasets: [{
+                label: 'Stagiaires par Pole',
+                data: @json($stagiairesPerPole->pluck('total')),
+                backgroundColor: ['#FF0000', '#0000FF', '#00FF00'],
+            }]
+        };
+
+        new Chart(document.getElementById('stagiairesPerPoleChart').getContext('2d'), {
+            type: 'bar',
+            data: stagiairesPerPoleData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1, // Ensures the steps are whole numbers
+                            precision: 0 // Rounds to whole numbers
+                        }
                     }
                 }
             }

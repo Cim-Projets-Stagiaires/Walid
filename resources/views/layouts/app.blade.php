@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
-    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon.png') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ asset('assets/images/logos/favicon-cim.png') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}" />
 </head>
 
@@ -107,7 +107,7 @@
                             <li class="sidebar-item">
                                 <a class="sidebar-link" href="{{ route('admins.index') }}" aria-expanded="false">
                                     <span>
-                                        <i class="ti ti-cards"></i>
+                                        <i class="ti ti-user-check"></i>
                                     </span>
                                     <span class="hide-menu">Admins</span>
                                 </a>

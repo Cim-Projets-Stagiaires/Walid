@@ -21,7 +21,7 @@ class RapportController extends Controller
         if (Auth::user()->type == "stagiaire") {
             $rapports = Rapport::where('id_stagiaire', $userId)->paginate(5);
             if ($rapports->count() == 0) {
-                $rapport = Rapport::create();
+                $rapport = new Rapport();
                 return view('rapports.index', compact('rapport', 'rapports'));
             }
             return view('rapports.index', compact('rapports'));
@@ -45,7 +45,6 @@ class RapportController extends Controller
     public function listRapport($id)
     {
         $encadrant = User::findOrFail($id);
-
         // Get the stagiaires assigned to this encadrant
         $stagiaires = User::where('id_encadrant', $encadrant->id)->pluck('id');
 
