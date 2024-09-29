@@ -4,8 +4,7 @@
 
 @section('content')
     <div class="container">
-        <h1>Stagiaires</h1>
-
+        <h1>Archives Stagiaires</h1>
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center"
                 role="alert">
@@ -79,11 +78,16 @@
                                     data-bs-toggle="modal" data-bs-target="#deleteModal{{ $stagiaire->id }}">
                                     <i class="ti ti-trash"></i>
                                 </button>
+                                <button type="button" class="btn btn-link p-0 text-secondary" style="font-size: 24px;"
+                                        data-bs-toggle="modal" data-bs-target="#restoreModal{{ $stagiaire->id }}">
+                                        <i class="ti ti-restore"></i>
+                                    </button>
                             </td>
                         </tr>
                         <!-- Include the stagiaire modal -->
                         @include('modals.stagiaires.show', ['stagiaire' => $stagiaire])
                         @include('modals.stagiaires.delete', ['stagiaire' => $stagiaire])
+                        @include('modals.stagiaires.restore', ['stagiaire' => $stagiaire])
                     @endforeach
                 </tbody>
             </table>

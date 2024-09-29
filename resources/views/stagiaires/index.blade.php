@@ -13,20 +13,20 @@
             </div>
         @endif
         <!-- Pole Filter Form -->
-            <form method="GET" action="{{ route('stagiaires.index') }}" class="mb-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <select name="pole" class="form-select" onchange="this.form.submit()">
-                            <option value="">-- Tout les Poles --</option>
-                            @foreach ($poles as $pole)
-                                <option value="{{ $pole }}" {{ $selectedPole == $pole ? 'selected' : '' }}>
-                                    {{ $pole }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+        <form method="GET" action="{{ route('stagiaires.index') }}" class="mb-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <select name="pole" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Tout les Poles --</option>
+                        @foreach ($poles as $pole)
+                            <option value="{{ $pole }}" {{ $selectedPole == $pole ? 'selected' : '' }}>
+                                {{ $pole }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-            </form>
+            </div>
+        </form>
         @if ($stagiaires->isEmpty())
             <div class="alert alert-info">Aucun stagiaire trouvé.</div>
         @else
@@ -89,14 +89,29 @@
                                 </form> --}}
                                 <!-- Delete Button triggers the modal -->
                                 <button type="button" class="btn btn-link p-0 text-danger" style="font-size: 24px;"
-                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ $stagiaire->id }}">
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ $stagiaire->id }}" title="Supprimer">
                                     <i class="ti ti-trash"></i>
                                 </button>
+                                @if ($stagiaire->deleted == false)
+                                    {{-- Archive Button triggers the modal --}}
+                                    <button type="button" class="btn btn-link p-0 text-warning" style="font-size: 24px;"
+                                        data-bs-toggle="modal" data-bs-target="#archiveModal{{ $stagiaire->id }}" title="Archiver stagiaire">
+                                        <i class="ti ti-archive"></i>
+                                    </button>
+                                @elseif($stagiaire->deleted == true)
+                                    {{-- Restore Button triggers the modal --}}
+                                    <button type="button" class="btn btn-link p-0 text-secondary" style="font-size: 24px;"
+                                        data-bs-toggle="modal" data-bs-target="#restoreModal{{ $stagiaire->id }}" title="Restaurer stagiaire">
+                                        <i class="ti ti-rotate-clockwise"></i>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
-                        <!-- Include the stagiaire modal -->
+                        <!-- Include the stagiaire modals -->
                         @include('modals.stagiaires.show', ['stagiaire' => $stagiaire])
                         @include('modals.stagiaires.delete', ['stagiaire' => $stagiaire])
+                        @include('modals.stagiaires.archive', ['stagiaire' => $stagiaire])
+                        @include('modals.stagiaires.restore', ['stagiaire' => $stagiaire])
                     @endforeach
                 </tbody>
             </table>

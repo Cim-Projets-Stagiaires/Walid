@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Presentation;
+use App\Models\Rapport;
 use App\Models\User;
 use App\Notifications\CreateEncadrant;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -29,7 +32,60 @@ class EncadrantController extends Controller
     public function listStagiaires($id)
     {
         $encadrant = User::findOrFail($id);
-        $stagiaires = User::where('id_encadrant', $encadrant->id)->get();
+        $stagiaires = User::where('id_encadrant', $encadrant->id)->where('deleted', false)->latest()->paginate(5);
+        foreach ($stagiaires as $stagiaire) {
+            $encadrant = User::find($stagiaire->id_encadrant);
+            $demande = $stagiaire->demande;
+            if ($demande) {
+                // Calculate the duration in months between 'date_de_debut' and 'date_de_fin'
+                $dateDebut = Carbon::parse($demande->date_de_debut);
+                $dateFin = Carbon::parse($demande->date_de_fin);
+                $stageDurationMonths = $dateDebut->diffInMonths($dateFin) + 1;
+                // Determine the required number of semi and final rapports and presentations
+                if ($stageDurationMonths <= 2) {
+                    $requiredSemiRapports = 1;
+                    $requiredFinalRapports = 1;
+                    $requiredPresentations = 2;
+                } elseif ($stageDurationMonths == 3) {
+                    $requiredSemiRapports = 1;
+                    $requiredFinalRapports = 1;
+                    $requiredPresentations = 2;
+                } elseif ($stageDurationMonths >= 4) {
+                    $requiredSemiRapports = 1;
+                    $requiredFinalRapports = 2;
+                    $requiredPresentations = 3;
+                } else {
+                    $requiredSemiRapports = 1;
+                    $requiredFinalRapports = 1;
+                    $requiredPresentations = 1;
+                }
+                // Fetch the number of validated semi and final rapports and presentations
+                $validatedSemiRapports = Rapport::where('id_stagiaire', $stagiaire->id)->where('type', 'semi')->where('status', 'validé')->count();
+                $validatedFinalRapports = Rapport::where('id_stagiaire', $stagiaire->id)->where('type', 'final')->where('status', 'validé')->count();
+                $validatedPresentations = Presentation::where('id_stagiaire', $stagiaire->id)->where('status', 'validé')->count();
+                // Total items to track progress
+                $totalItems = $requiredSemiRapports + $requiredFinalRapports + $requiredPresentations;
+                $completedItems = $validatedSemiRapports + $validatedFinalRapports + $validatedPresentations;
+                // Calculate the progress percentage
+                $stagiaire->progress = ($totalItems > 0) ? ($completedItems / $totalItems) * 100 : 0;
+                $stagiaire->requiredSemiRapports = $requiredSemiRapports;
+                $stagiaire->requiredFinalRapports = $requiredFinalRapports;
+                $stagiaire->requiredPresentations = $requiredPresentations;
+                $stagiaire->validatedSemiRapports = $validatedSemiRapports;
+                $stagiaire->validatedFinalRapports = $validatedFinalRapports;
+                $stagiaire->validatedPresentations = $validatedPresentations;
+                $stagiaire->encadrant = $encadrant;
+            } else {
+                // If there's no demande, default progress to 0
+                $stagiaire->progress = 0;
+                $stagiaire->requiredSemiRapports = 0;
+                $stagiaire->requiredFinalRapports = 0;
+                $stagiaire->requiredPresentations = 0;
+                $stagiaire->validatedSemiRapports = 0;
+                $stagiaire->validatedFinalRapports = 0;
+                $stagiaire->validatedPresentations = 0;
+            }
+        }
 
         return view('encadrants.listStagiaires', compact('encadrant', 'stagiaires'));
     }

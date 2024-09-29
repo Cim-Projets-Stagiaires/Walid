@@ -408,7 +408,7 @@ class StagiaireController extends Controller
      */
     public function destroy($id)
     {
-        /* $demande = Demande_de_stage::where('id_stagiaire', $id)->first();
+        $demande = Demande_de_stage::where('id_stagiaire', $id)->first();
         $rapports = Rapport::where('id_stagiaire', $id)->get();
         $presentations = Presentation::where('id_stagiaire', $id)->get();
         $user = User::findOrFail($id);
@@ -423,10 +423,23 @@ class StagiaireController extends Controller
             $presentation->delete();
         };
 
-        $user->delete(); */
+        $user->delete();
+        return redirect()->route('stagiaires.index')->with('success', 'Stagiaire deleted successfully.');
+    }
+
+    public function archiver($id)
+    {
         $stagiaire = User::findOrFail($id);
         $stagiaire->deleted = true;
         $stagiaire->save();
         return redirect()->route('stagiaires.index')->with('success', 'Stagiaires deleted successfully.');
+    }
+
+    public function restore($id)
+    {
+        $stagiaire = User::findOrFail($id);
+        $stagiaire->deleted = false;
+        $stagiaire->save();
+        return redirect()->route('stagiaires.index')->with('success', 'Stagiaires restored successfully.');
     }
 }

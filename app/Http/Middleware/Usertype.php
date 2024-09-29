@@ -80,6 +80,7 @@ class Usertype
                 'rapports.destroy',
                 'rapports.update',
                 'rapports.show',
+                'rapports.list',
                 'logout',
                 'login',
                 'presentations.index',
@@ -88,6 +89,7 @@ class Usertype
                 'presentations.store',
                 'presentations.approuver',
                 'presentations.refuser',
+                'presentations.list'
             ];
             if ($user->permanent) {
                 $allowedRoutes = array_merge($allowedRoutes, ['stagiaires.index']);

@@ -82,6 +82,16 @@
                                 </a>
                             </li>
                         @endif
+                        @if (Auth::user()->type == 'encadrant')
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" href="{{ route('encadrants.stagiaires', Auth::user()->id) }}" aria-expanded="false">
+                                    <span>
+                                        <i class="ti ti-users"></i>
+                                    </span>
+                                    <span class="hide-menu">Stagiaires</span>
+                                </a>
+                            </li>
+                        @endif
                         @if (Auth::user()->type == 'responsable admin' || Auth::user()->type == 'directeur')
                             <li class="sidebar-item">
                                 <a class="sidebar-link" href="{{ route('stagiaires.candidats') }}"
@@ -138,6 +148,7 @@
                             </li>
                         @endif
                         <!-- Archives Dropdown -->
+                        @if (Auth::user()->type == 'responsable admin' || Auth::user()->type == 'directeur')
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow justify-content-between" href="javascript:void(0)"
                                 aria-expanded="false">
@@ -163,6 +174,7 @@
                                 <!-- Add more archived items if needed -->
                             </ul>
                         </li>
+                        @endif
                         @if (Auth::user()->type == 'encadrant')
                             <li class="sidebar-item">
                                 <a class="sidebar-link"

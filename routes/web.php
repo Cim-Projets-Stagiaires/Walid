@@ -68,6 +68,8 @@ Route::patch('demande-de-stage/{demande}/deny', [DemandeController::class, 'deny
 
 // Stagiaire Routes
 Route::get('/stagiaires/archive', [StagiaireController::class, 'archive'])->name('stagiaires.archive')->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
+Route::post('/stagiaires/archiver/{id}', [StagiaireController::class, 'archiver'])->name('stagiaires.archiver')->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
+Route::post('/stagiaires/restorer/{id}', [StagiaireController::class, 'restore'])->name('stagiaires.restore')->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
 Route::resource('stagiaires', StagiaireController::class)->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache']);
 Route::get('candidats', [StagiaireController::class, 'listCandidats'])->middleware(['auth', 'usertype', 'logoutOnBack', 'noCache'])->name('stagiaires.candidats');
 

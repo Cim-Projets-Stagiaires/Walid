@@ -66,24 +66,25 @@
                                     <button type="submit" class="text-danger btn btn-link p-0"
                                         style="font-size: 24px; margin-right: 5px;"><i class="ti ti-trash"></i></button>
                                 </form>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <!-- Status Change Buttons -->
-                                <form action="{{ route('presentations.approuver', $presentation->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="text-success btn btn-link p-0"
-                                        style="font-size: 24px; margin-right: 5px;" title="valider presentation">
-                                        <i class="ti ti-circle-check"></i></button>
-                                </form>
-                                <form action="{{ route('presentations.refuser', $presentation->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="text-danger btn btn-link p-0"
-                                        style="font-size: 24px; margin-right: 5px;" title="refuser presentation">
-                                        <i class="ti ti-playstation-x"></i></button>
-                                </form>
+                                @if (Auth::user()->type == 'encadrant')
+                                    <form action="{{ route('presentations.approuver', $presentation->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-success btn btn-link p-0"
+                                            style="font-size: 24px; margin-right: 5px;" title="valider presentation">
+                                            <i class="ti ti-circle-check"></i></button>
+                                    </form>
+                                    <form action="{{ route('presentations.refuser', $presentation->id) }}" method="POST"
+                                        class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="text-danger btn btn-link p-0"
+                                            style="font-size: 24px; margin-right: 5px;" title="refuser presentation">
+                                            <i class="ti ti-playstation-x"></i></button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
