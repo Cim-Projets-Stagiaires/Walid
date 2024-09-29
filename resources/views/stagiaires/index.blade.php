@@ -5,7 +5,6 @@
 @section('content')
     <div class="container">
         <h1>Stagiaires</h1>
-
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center"
                 role="alert">
