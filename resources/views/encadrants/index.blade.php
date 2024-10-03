@@ -5,7 +5,7 @@
 @section('content')
     <div class="container">
         <h1>Encadrants</h1>
-        <a href="{{ route('encadrants.create') }}" class="btn btn-primary mb-3">Ajouter un Encadrant</a>
+        {{-- <a href="{{ route('encadrants.create') }}" class="btn btn-primary mb-3">Ajouter un Encadrant</a> --}}
         <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createEncadrantModal">Ajouter un Encadrant</a>
         <table class="table">
             <thead>

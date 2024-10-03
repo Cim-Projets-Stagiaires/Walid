@@ -5,6 +5,7 @@
 @section('content')
     <div class="container">
         <h1>Stagiaires</h1>
+
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center"
                 role="alert">
@@ -34,6 +35,7 @@
                 <thead class="table-light">
                     <tr>
                         <th class="text-center">Profile Picture</th>
+                        <th class="text-center">Matricule</th>
                         <th class="text-center">Nom</th>
                         <th class="text-center">Prénom</th>
                         <th class="text-center">Email</th>
@@ -54,6 +56,17 @@
                                         style="width: 50px; height: 50px; object-fit: cover;">
                                 @endif
                             </td>
+                            @php
+                                // Get the current year
+                                $year = \Carbon\Carbon::now()->format('y'); // Current year (e.g., '24')
+                            @endphp
+                            @if ($stagiaire->demande->pole == 'Services transverses')
+                                <td class="text-center">{{ $year }}/ST/{{ $stagiaire->code }}</td>
+                            @elseif($stagiaire->demande->pole == 'Valorisation')
+                                <td class="text-center">{{ $year }}/Val/{{ $stagiaire->code }}</td>
+                            @else
+                                <td class="text-center">{{ $year }}/Inc/{{ $stagiaire->code }}</td>
+                            @endif
                             <td class="text-center">{{ $stagiaire->nom }}</td>
                             <td class="text-center">{{ $stagiaire->prenom }}</td>
                             <td class="text-center">{{ $stagiaire->email }}</td>
@@ -89,22 +102,29 @@
                                 </form> --}}
                                 <!-- Delete Button triggers the modal -->
                                 <button type="button" class="btn btn-link p-0 text-danger" style="font-size: 24px;"
-                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ $stagiaire->id }}" title="Supprimer">
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ $stagiaire->id }}"
+                                    title="Supprimer">
                                     <i class="ti ti-trash"></i>
                                 </button>
                                 @if ($stagiaire->deleted == false)
                                     {{-- Archive Button triggers the modal --}}
                                     <button type="button" class="btn btn-link p-0 text-warning" style="font-size: 24px;"
-                                        data-bs-toggle="modal" data-bs-target="#archiveModal{{ $stagiaire->id }}" title="Archiver stagiaire">
+                                        data-bs-toggle="modal" data-bs-target="#archiveModal{{ $stagiaire->id }}"
+                                        title="Archiver stagiaire">
                                         <i class="ti ti-archive"></i>
                                     </button>
                                 @elseif($stagiaire->deleted == true)
                                     {{-- Restore Button triggers the modal --}}
                                     <button type="button" class="btn btn-link p-0 text-secondary" style="font-size: 24px;"
-                                        data-bs-toggle="modal" data-bs-target="#restoreModal{{ $stagiaire->id }}" title="Restaurer stagiaire">
+                                        data-bs-toggle="modal" data-bs-target="#restoreModal{{ $stagiaire->id }}"
+                                        title="Restaurer stagiaire">
                                         <i class="ti ti-rotate-clockwise"></i>
                                     </button>
                                 @endif
+                                <a href="{{ route('stagiaires.downloadAttestation', $stagiaire->id) }}"
+                                    class="btn btn-link p-0 text-success" style="font-size: 24px;" title="Generer attetestation">
+                                    <i class="ti ti-file-text"></i>
+                                </a>
                             </td>
                         </tr>
                         <!-- Include the stagiaire modals -->

@@ -60,18 +60,8 @@
             @endif
             <a href="{{ route('stagiaires.edit', $stagiaire->id) }}" class="btn btn-warning">Edit</a> &nbsp;&nbsp;
             @if ($encadrant)
-<<<<<<< HEAD
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#encadrantModal">
-                    View Encadrant
-=======
-<<<<<<< HEAD
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#encadrantModal">
-                    View Encadrant
-=======
                 <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#encadrantModal">
                     Voir Encadrant
->>>>>>> 567d2b3 (latest)
->>>>>>> b0aee08 (latest)
                 </button>
             @endif
             <a href="{{ route('rapports.index') }}" class="btn btn-secondary">Liste des rapports</a>

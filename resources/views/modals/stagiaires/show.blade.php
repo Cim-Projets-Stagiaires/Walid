@@ -46,10 +46,22 @@
                             </p>
                         </div>
                         <div class="col-md-6 mb-3" style="padding-left: 15%;">
-                            <p><strong>Pole: </strong>{{ $stagiaire->demande->pole }}</p>
+                            <p><strong>Pole: </strong>
+                                @if ($stagiaire->demande)
+                                    {{ $stagiaire->demande->pole }}
+                                @else
+                                    demande non déposée
+                                @endif
+                            </p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong>Etablissement: </strong>{{ $stagiaire->demande->etablissement }}</p>
+                            <p><strong>Etablissement: </strong>
+                                @if ($stagiaire->demande)
+                                    {{ $stagiaire->demande->etablissement }}
+                                @else
+                                    Non défini
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>

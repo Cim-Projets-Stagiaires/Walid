@@ -6,6 +6,8 @@ use App\Models\Demande_de_stage;
 use App\Models\Presentation;
 use App\Models\Rapport;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\PDF;
+/* use Barryvdh\DomPDF\Facade as PDF; */
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+/* use PhpOffice\PhpWord\Writer\PDF\DomPDF; */
 
 class StagiaireController extends Controller
 {
@@ -51,7 +54,6 @@ class StagiaireController extends Controller
         foreach ($stagiaires as $stagiaire) {
             $encadrant = User::find($stagiaire->id_encadrant);
             $demande = $stagiaire->demande;
-
             if ($demande) {
                 $dateDebut = Carbon::parse($demande->date_de_debut);
                 $dateFin = Carbon::parse($demande->date_de_fin);
@@ -225,6 +227,7 @@ class StagiaireController extends Controller
         // Create a paginator instance
         $candidatsPaginated = new LengthAwarePaginator($currentPageItems, $candidatsCollection->count(), $perPage);
         $candidatsPaginated->setPath($request->url());
+        /* dd($candidatsPaginated); */
 
         return view('stagiaires.candidats', compact('candidatsPaginated'));
     }
@@ -441,5 +444,18 @@ class StagiaireController extends Controller
         $stagiaire->deleted = false;
         $stagiaire->save();
         return redirect()->route('stagiaires.index')->with('success', 'Stagiaires restored successfully.');
+    }
+
+    public function downloadAttestation($id){
+        $stagiaire = User::where('type', 'stagiaire')->findOrFail($id);
+        $year = Carbon::now()->format('y');
+        $pdf = PDF::loadView('attestation', [
+            'stagiaire' => $stagiaire,
+            'code' => $stagiaire->code,
+            'year' => $year,
+        ]);
+        //download attestation
+        /* dd($pdf); */
+        return $pdf->download('attestation_de_stage_' . $stagiaire->nom . '_' . $stagiaire->prenom . '.pdf');
     }
 }

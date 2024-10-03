@@ -14,8 +14,8 @@
         <div class="mb-3">
             <label for="type" class="form-label">Type</label>
             <select class="form-select" name="type" id="type" required>
-                <option value="semi">Semi Report</option>
-                <option value="final">Final Report</option>
+                <option value="semi">mi-stage</option>
+                <option value="final">fin de stage</option>
             </select>
         </div>
         <div class="mb-3">

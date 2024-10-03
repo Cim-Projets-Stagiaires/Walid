@@ -1,0 +1,78 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    /* margin: 50px auto; */
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    min-height: 800px; /* Increase the height of the container */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensure elements are spread out */
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px; /* More space below the header */
+}
+
+header h1 {
+    font-size: 24px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+header .reference {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #666;
+}
+
+.logo {
+    width: 70%; /* Make the image smaller */
+    /* margin: 0 auto 20px auto; */
+    display: block;
+}
+
+.content {
+    text-align: justify;
+    margin-bottom: 30px;
+    padding: 5px 20px 5px 20px;
+    font-size: 14px; /* Smaller font for paragraphs */
+    flex-grow: 1; /* Allow the content to take up available space */
+}
+
+.footer {
+    text-align: left; /* Move "Fait à Marrakech" to the left */
+    margin-top: 50px;
+}
+
+.signature {
+    text-align: right; /* Move signature to the right */
+    margin-top: 40px; /* More space between footer and signature */
+    font-weight: bold;
+}
+
+footer {
+    text-align: center;
+    font-size: 12px; /* Smaller font for footer */
+   /*  margin-top: 40px; */ /* Move footer lower */
+}
+
+footer p {
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+footer span {
+    direction: rtl;
+    display: block;
+}

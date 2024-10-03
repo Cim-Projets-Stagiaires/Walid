@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Demande_de_stage;
 use App\Models\Entretien;
 use App\Models\User;
 use App\Notifications\EntretienApprouved;
@@ -26,7 +27,7 @@ class EntretienController extends Controller
             })
             ->get();
         $entretiens = Entretien::with('stagiaire')->orderBy('created_at', 'desc')->paginate(6);
-        return view('entretiens.index', compact('entretiens','stagiaires'));
+        return view('entretiens.index', compact('entretiens', 'stagiaires'));
     }
 
     /**
@@ -141,6 +142,27 @@ class EntretienController extends Controller
         $entretien->save();
         //notifier candidat que sa candidature est approuvé
         $stagiaire = User::findOrFail($entretien->id_stagiaire);
+        $demande = Demande_de_stage::where('id_stagiaire', $stagiaire->id)->first();
+        $polePrefix = '';
+        switch ($demande->pole) {
+            case 'Services transverses':
+                $polePrefix = 'ST';
+                break;
+            case 'Valorisation':
+                $polePrefix = 'Val';
+                break;
+            case 'Incubation':
+                $polePrefix = 'Inc';
+                break;
+        }
+        $lastCode = User::where('type', 'stagiaire')->whereNotNull('code')->orderBy('code', 'desc')->first();
+        $newCode = $lastCode ? $lastCode->code + 1 : 1;
+        // Assign the code to the stagiaire
+        /* dd($stagiaire->id, $demande->pole, $polePrefix, $lastCode->code, $newCode); */
+        $stagiaire->code = $newCode;
+        /* dd($stagiaire->id, $demande->pole, $polePrefix, $newCode); */
+        $stagiaire->save();
+        //notify candidat
         $stagiaire->notify(new EntretienApprouved($entretien));
         return redirect()->route('entretiens.index')->with('success', 'candidat approuvé.');
     }
